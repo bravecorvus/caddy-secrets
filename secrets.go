@@ -20,14 +20,6 @@ func init() {
 
 func setup(c *caddy.Controller) error {
 	for c.Next() {
-		cfg := httpserver.GetConfig(c)
-		mid := func(next httpserver.Handler) httpserver.Handler {
-			return MyHandler{
-				Next: next,
-			}
-		}
-		cfg.AddMiddleware(mid)
-
 		args := c.RemainingArgs()
 		fileName := args[0]
 		secretsUser := args[1]
@@ -47,26 +39,34 @@ func setup(c *caddy.Controller) error {
 		// 	fmt.Println(out.String())
 		// }
 
+		m := yaml.MapSlice{}
 		content, err := ioutil.ReadFile(fileName)
 		if err != nil {
 			fmt.Println(err.Error())
 		} else {
 
-			m := yaml.MapSlice{}
 			err := yaml.Unmarshal([]byte(content), &m)
 			if err != nil {
 				fmt.Printf("error: %v\n", err.Error())
 			} else {
 				fmt.Printf("yaml: %v\n", m)
 			}
-
 			cmd = exec.Command("/bin/sh", "-c", fmt.Sprintf("sudo chown %s %s", secretsUser, fileName))
 			cmd.Run()
 		}
 
-		mids := cfg.Middleware()
-		secrets := mids[0](httpserver.EmptyNext)
-		fmt.Printf("\n%T %v\n", secrets, secrets)
+		cfg := httpserver.GetConfig(c)
+		mid := func(next httpserver.Handler) httpserver.Handler {
+			return MyHandler{
+				SecretsMap: m,
+				Next:       next,
+			}
+		}
+		cfg.AddMiddleware(mid)
+
+		// mids := cfg.Middleware()
+		// secrets := mids[0](httpserver.EmptyNext)
+		// fmt.Printf("\n%T %v\n", secrets, secrets)
 	}
 
 	return nil
@@ -74,7 +74,7 @@ func setup(c *caddy.Controller) error {
 
 type MyHandler struct {
 	Next       httpserver.Handler
-	SecretsMap map[string]string
+	SecretsMap yaml.MapSlice
 }
 
 func (h MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) (int, error) {
