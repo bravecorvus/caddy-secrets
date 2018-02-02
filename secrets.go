@@ -20,7 +20,7 @@ type MyHandler struct {
 	Next httpserver.Handler
 }
 
-var SecretsMap *yaml.MapSlice
+var SecretsMap yaml.MapSlice
 
 func setup(c *caddy.Controller) error {
 	if c.Next() {
@@ -55,7 +55,7 @@ func readFile(fileName string) error {
 		if err = yaml.Unmarshal([]byte(content), &m); err != nil {
 			return err
 		}
-		SecretsMap = &m
+		SecretsMap = m
 	}
 	return nil
 }
