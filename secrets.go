@@ -24,8 +24,8 @@ var SecretsMap yaml.MapSlice
 
 func Setup(c *caddy.Controller) error {
 	if c.Next() {
-		c.Next()
 
+		c.Next()
 		fileName := c.Val()
 		if err := readFile(fileName); err != nil {
 			return err
@@ -39,7 +39,7 @@ func Setup(c *caddy.Controller) error {
 		}
 		cfg.AddMiddleware(mid)
 
-		if c.Next() {
+		if len(c.RemainingArgs()) > 0 {
 			return errors.New("Secrets middleware received more arguments than expected")
 		}
 	}
