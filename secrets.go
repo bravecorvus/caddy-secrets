@@ -12,17 +12,17 @@ import (
 func init() {
 	caddy.RegisterPlugin("secrets", caddy.Plugin{
 		ServerType: "http",
-		Action:     setup,
+		Action:     Setup,
 	})
 }
 
-type MyHandler struct {
+type SecretsHandler struct {
 	Next httpserver.Handler
 }
 
 var SecretsMap yaml.MapSlice
 
-func setup(c *caddy.Controller) error {
+func Setup(c *caddy.Controller) error {
 	if c.Next() {
 		c.Next()
 
@@ -33,7 +33,7 @@ func setup(c *caddy.Controller) error {
 
 		cfg := httpserver.GetConfig(c)
 		mid := func(next httpserver.Handler) httpserver.Handler {
-			return MyHandler{
+			return SecretsHandler{
 				Next: next,
 			}
 		}
@@ -60,6 +60,6 @@ func readFile(fileName string) error {
 	return nil
 }
 
-func (h MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) (int, error) {
+func (h SecretsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) (int, error) {
 	return h.Next.ServeHTTP(w, r)
 }
