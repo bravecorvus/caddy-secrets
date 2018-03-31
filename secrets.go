@@ -22,6 +22,33 @@ type SecretsHandler struct {
 
 var SecretsMap yaml.MapSlice
 
+func GetObject(mapslice yaml.MapSlice, key string) yaml.MapSlice {
+	for _, s := range mapslice {
+		if s.Key == key {
+			return s.Value.(yaml.MapSlice)
+		}
+	}
+	return nil
+}
+
+func GetArray(mapslice yaml.MapSlice, key string) []interface{} {
+	for _, s := range mapslice {
+		if s.Key == key {
+			return s.Value.([]interface{})
+		}
+	}
+	return nil
+}
+
+func GetValue(mapslice yaml.MapSlice, key string) interface{} {
+	for _, s := range mapslice {
+		if s.Key == key {
+			return s.Value
+		}
+	}
+	return nil
+}
+
 func Setup(c *caddy.Controller) error {
 	if c.Next() {
 
