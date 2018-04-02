@@ -49,6 +49,15 @@ func GetValue(mapslice yaml.MapSlice, key string) interface{} {
 	return nil
 }
 
+func FindKey(mapslice yaml.MapSlice, key string) bool {
+	for _, s := range mapslice {
+		if s.Key == key {
+			return true
+		}
+	}
+	return false
+}
+
 func Setup(c *caddy.Controller) error {
 	if c.Next() {
 
