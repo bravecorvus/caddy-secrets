@@ -29,7 +29,7 @@ caddy.test {
 }
 ```
 
-The file that will be read is secrets.yml in the same directory as the caddy binary running. The map slice that gets populated with the secret values is called SecretsMap and will be availabe in modules that import caddy-secrets.
+This module leverages [go-getter](https://github.com/hashicorp/go-getter); so long as the file path fits the formats they handle it can get files from relative path, Git, Mercurial, HTTP, or Amazon S3 (if the AWS credentials are setup). The map slice that gets populated with the secret values is called SecretsMap and will be availabe in modules that import caddy-secrets.
 
 ## Dependencies
 

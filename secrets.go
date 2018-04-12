@@ -1,12 +1,15 @@
 package secrets
 
 import (
-	"errors"
 	"github.com/mholt/caddy"
 	"github.com/mholt/caddy/caddyhttp/httpserver"
+	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"net/http"
+	"os"
+
+	"github.com/hashicorp/go-getter"
 )
 
 func init() {
@@ -63,7 +66,24 @@ func Setup(c *caddy.Controller) error {
 
 		c.Next()
 		fileName := c.Val()
-		if err := readFile(fileName); err != nil {
+
+		pwd, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+
+		client := &getter.Client{
+			Src:     fileName,
+			Dst:     ".secrets.yml",
+			Dir:     false,
+			Pwd:     pwd,
+			Getters: getter.Getters,
+		}
+
+		if err := client.Get(); err != nil {
+			return errors.Wrap(err, "Error downloading")
+		}
+		if err := readFile(".secrets.yml"); err != nil {
 			return err
 		}
 
