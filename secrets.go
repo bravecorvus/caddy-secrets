@@ -74,7 +74,7 @@ func Setup(c *caddy.Controller) error {
 
 		client := &getter.Client{
 			Src:     fileName,
-			Dst:     ".secrets.yml",
+			Dst:     ".secrets_file.yml",
 			Dir:     false,
 			Pwd:     pwd,
 			Getters: getter.Getters,
@@ -83,7 +83,7 @@ func Setup(c *caddy.Controller) error {
 		if err := client.Get(); err != nil {
 			return errors.Wrap(err, "Error downloading")
 		}
-		if err := readFile(".secrets.yml"); err != nil {
+		if err := readFile(".secrets_file.yml"); err != nil {
 			return err
 		}
 
