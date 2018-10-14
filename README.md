@@ -1,5 +1,7 @@
 # caddy secrets
 
+> This is a direct copy of the code that was originally hosted at [https://github.com/startsmartlabs/caddy-secrets](https://github.com/startsmartlabs/caddy-secrets). To the people who wrote this originally, I can not longer build Caddy server from source because of this dependency which is required by `freman/caddy-reauth/backends/refresh/auth.go`. If you feel that you need more attribution (I cannot see the individual members of `smartsmartlabs`), or refuse to have `caddy-secrets` be archived in this way, please contact me at [me@gilgameshskytrooper.io](me@gilgameshskytrooper.io).
+
 This is a plugin for [caddy server](https://caddyserver.com/), it reads a yaml file to make static secrets available to the middleware in a package level yaml.MapSlice
 
 ## Build
@@ -7,9 +9,10 @@ This is a plugin for [caddy server](https://caddyserver.com/), it reads a yaml f
 To use it you need to compile your own version of caddy with this plugin. First fetch the code
 
 - `go get -u github.com/mholt/caddy/...`
-- `go get -u github.com/startsmartlabs/caddy-secrets`
+- **(No Longer a valid git repo)**`go get -u github.com/startsmartlabs/caddy-secrets`
+- `go get -u github.com/gilgameshskytrooper/caddy-secrets`
 
-Update the file in `$GOPATH/src/github.com/mholt/caddy/caddy/caddymain/run.go` and import `_ "github.com/startsmartlabs/caddy-secrets"`.
+Update the file in `$GOPATH/src/github.com/mholt/caddy/caddy/caddymain/run.go` and import `_ "github.com/gilgameshskytrooper/caddy-secrets"`.
 Then update the file in `$GOPATH/src/github.com/mholt/caddy/caddyhttp/httpserver/plugin.go` and add "secrets" at the start of the `var directives` list. If there are plugins that come before secrets on the list, they won't have access to the values read from the yaml file.
 
 And finally build caddy with:
